@@ -37,3 +37,4 @@ roleRef:
   kind: Role
   name: grapi-readonly-role
   apiGroup: rbac.authorization.k8s.io
+

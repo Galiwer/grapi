@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	version := getEnv("APP_VERSION", "1.0.0")
+	version := getEnv("APP_VERSION", "1.1.0")
 	environment := getEnv("APP_ENV", "local")
 
 	mux := http.NewServeMux()
@@ -25,6 +25,7 @@ func main() {
 	mux.HandleFunc("GET /ready", api.Ready)
 	mux.HandleFunc("GET /version", api.Version)
 	mux.HandleFunc("GET /api/message", api.Message)
+	mux.HandleFunc("GET /metrics", api.Metrics)
 
 	server := &http.Server{
 		Addr:         ":8080",
