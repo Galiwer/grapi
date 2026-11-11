@@ -33,8 +33,17 @@ data:
             target_label: namespace
 
       - job_name: 'traefik-ingress'
-        static_configs:
-          - targets: ['traefik.traefik.svc.cluster.local:9100']
+        kubernetes_sd_configs:
+          - role: pod
+            namespaces:
+              names:
+                - traefik
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_ip]
+            target_label: __address__
+            replacement: ${1}:9100
+          - source_labels: [__meta_kubernetes_pod_name]
+            target_label: pod
 
       - job_name: 'argocd-metrics'
         static_configs:
@@ -122,3 +131,4 @@ spec:
       port: 9090
       targetPort: http
       protocol: TCP
+
