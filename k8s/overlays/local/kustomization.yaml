@@ -9,4 +9,4 @@ resources:
 images:
   - name: ghcr.io/galiwer/grapi
     newName: ghcr.io/galiwer/grapi
-    newTag: sha-invalid999
+    newTag: sha-1ae2f2d

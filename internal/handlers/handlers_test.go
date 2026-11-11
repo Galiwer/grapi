@@ -25,8 +25,8 @@ func TestHealth(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	if result["status"] != "INTENTIONAL_CI_FAILURE_TEST" {
-		t.Errorf("expected INTENTIONAL_CI_FAILURE_TEST, got %v", result["status"])
+	if result["status"] != "healthy" {
+		t.Errorf("expected healthy, got %v", result["status"])
 	}
 }
 
