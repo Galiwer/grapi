@@ -57,7 +57,7 @@ func (a *API) Version(w http.ResponseWriter, r *http.Request) {
 
 func (a *API) Message(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, Response{
-		"message": "Hello! Your Go REST API is running successfully.",
+		"message": "Hello! Your Go REST API is running successfully via automated GitOps CI/CD.",
 		"status":  "success",
 	})
 }
