@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: grapi-sa
+  namespace: application
+  labels:
+    app.kubernetes.io/name: grapi
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: grapi-readonly-role
+  namespace: application
+  labels:
+    app.kubernetes.io/name: grapi
+rules:
+  - apiGroups: [""]
+    resources: ["pods", "services", "endpoints"]
+    verbs: ["get", "list", "watch"]
+  - apiGroups: ["apps"]
+    resources: ["deployments", "replicasets"]
+    verbs: ["get", "list", "watch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: grapi-readonly-binding
+  namespace: application
+  labels:
+    app.kubernetes.io/name: grapi
+subjects:
+  - kind: ServiceAccount
+    name: grapi-sa
+    namespace: application
+roleRef:
+  kind: Role
+  name: grapi-readonly-role
+  apiGroup: rbac.authorization.k8s.io

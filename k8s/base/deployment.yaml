@@ -21,6 +21,9 @@ spec:
       labels:
         app.kubernetes.io/name: grapi
     spec:
+      serviceAccountName: grapi-sa
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 15
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001
@@ -40,6 +43,10 @@ spec:
               value: "1.0.0"
             - name: APP_ENV
               value: "production"
+          lifecycle:
+            preStop:
+              exec:
+                command: ["/bin/sh", "-c", "sleep 2"]
           resources:
             requests:
               cpu: "50m"

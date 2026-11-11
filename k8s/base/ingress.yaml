@@ -28,3 +28,4 @@ spec:
                 name: grapi-svc
                 port:
                   number: 80
+

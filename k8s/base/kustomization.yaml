@@ -5,6 +5,8 @@ namespace: application
 
 resources:
   - namespace.yaml
+  - rbac.yaml
+  - quota.yaml
   - deployment.yaml
   - service.yaml
   - ingress.yaml
