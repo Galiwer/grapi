@@ -1,0 +1,14 @@
+# Ignore Git metadata, tests, documentation, and local artifacts
+.git
+.gitignore
+README.md
+*_test.go
+*.test
+*.out
+coverage.*
+.env
+.env.*
+.DS_Store
+.idea/
+.vscode/
+

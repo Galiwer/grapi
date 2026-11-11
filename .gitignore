@@ -29,5 +29,21 @@ go.work.sum
 .env
 
 # Editor/IDE
-# .idea/
-# .vscode/
+.idea/
+.vscode/
+.DS_Store
+
+# Security Hardening — Secrets, Kubeconfigs, and Credentials (NEVER COMMIT)
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+*kubeconfig*
+k3s.yaml
+.kube/
+.env.*
+*secret*.yaml
+!*rbac*.yaml
+state*.db
+

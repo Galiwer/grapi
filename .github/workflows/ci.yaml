@@ -1,0 +1,121 @@
+name: CI — Build, Test & Publish ARM64 Image
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "cmd/**"
+      - "internal/**"
+      - "go.mod"
+      - "go.sum"
+      - "Dockerfile"
+      - ".dockerignore"
+      - ".github/workflows/ci.yaml"
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "cmd/**"
+      - "internal/**"
+      - "go.mod"
+      - "go.sum"
+      - "Dockerfile"
+      - ".dockerignore"
+      - ".github/workflows/ci.yaml"
+
+# Top-level default permissions: read-only least privilege
+permissions:
+  contents: read
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ghcr.io/galiwer/grapi
+
+jobs:
+  # ============================================================================
+  # Stage 1: Go Vet, Unit Tests, and Dockerfile Validation
+  # ============================================================================
+  test:
+    name: Validate & Run Go Unit Tests
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Set up Go 1.22
+        uses: actions/setup-go@3041bf56c941b39c61721a86cd11f3bb1338122a # v5.2.0
+        with:
+          go-version: "1.22"
+
+      - name: Verify Go formatting and static analysis (go vet)
+        run: |
+          if [ -n "$(gofmt -l .)" ]; then
+            echo "Go code is not formatted:"
+            gofmt -d .
+            exit 1
+          fi
+          go vet ./...
+
+      - name: Execute unit tests
+        run: go test -v -race ./...
+
+      - name: Validate Dockerfile instructions
+        run: |
+          grep -q "^USER 10001:10001" Dockerfile
+          grep -q "^EXPOSE 8080" Dockerfile
+
+  # ============================================================================
+  # Stage 2: Build linux/arm64 Container Image & Publish to GHCR
+  # ============================================================================
+  build-and-push:
+    name: Build & Push ARM64 Image to GHCR
+    needs: [test]
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      short_sha: ${{ steps.vars.outputs.short_sha }}
+      image_tag: ${{ steps.vars.outputs.image_tag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Compute immutable Git commit SHA tags
+        id: vars
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          echo "short_sha=${SHORT_SHA}" >> "${GITHUB_OUTPUT}"
+          echo "image_tag=sha-${SHORT_SHA}" >> "${GITHUB_OUTPUT}"
+          echo "Computed immutable image tag: sha-${SHORT_SHA}"
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@b5ca514318bd6ebac0fb2aedd5d36ec1b5c232a2 # v3.10.0
+
+      - name: Authenticate with GitHub Container Registry (GHCR)
+        uses: docker/login-action@74a5d142397b4f367a81961eba4e8cd7edddf772 # v3.4.0
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and push linux/arm64 Docker image
+        uses: docker/build-push-action@14487ce63c7a62a4a324b0bfb37086795e31c6c1 # v6.16.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/arm64
+          push: true
+          tags: |
+            ${{ env.IMAGE_NAME }}:${{ steps.vars.outputs.image_tag }}
+            ${{ env.IMAGE_NAME }}:${{ github.sha }}
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.title=grapi
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
