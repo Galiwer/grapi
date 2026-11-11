@@ -45,7 +45,7 @@ data:
       "uid": "gitops-grapi-overview",
       "timezone": "browser",
       "schemaVersion": 39,
-      "version": 2,
+      "version": 3,
       "refresh": "5s",
       "time": {
         "from": "now-15m",
@@ -54,37 +54,20 @@ data:
       "panels": [
         {
           "id": 1,
-          "title": "Monitored Targets",
+          "title": "Prometheus Targets Up",
           "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 0, "y": 0 },
+          "gridPos": { "h": 4, "w": 6, "x": 0, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
-            "colorMode": "background",
+            "colorMode": "value",
             "graphMode": "none",
-            "justifyMode": "center",
-            "textMode": "value"
+            "justifyMode": "auto",
+            "textMode": "auto"
           },
           "fieldConfig": {
             "defaults": {
               "unit": "none",
-              "decimals": 0,
-              "color": { "mode": "thresholds" },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  { "color": "red", "value": null },
-                  { "color": "orange", "value": 4 },
-                  { "color": "green", "value": 6 }
-                ]
-              },
-              "mappings": [
-                {
-                  "type": "value",
-                  "options": {
-                    "6": { "text": "6 / 6 ONLINE", "color": "green" }
-                  }
-                }
-              ]
+              "color": { "mode": "fixed", "fixedColor": "green" }
             }
           },
           "targets": [
@@ -97,35 +80,20 @@ data:
         },
         {
           "id": 2,
-          "title": "Go API Replicas",
+          "title": "Go API Running Pods",
           "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 4, "y": 0 },
+          "gridPos": { "h": 4, "w": 6, "x": 6, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
-            "colorMode": "background",
+            "colorMode": "value",
             "graphMode": "none",
-            "justifyMode": "center",
-            "textMode": "value"
+            "justifyMode": "auto",
+            "textMode": "auto"
           },
           "fieldConfig": {
             "defaults": {
-              "color": { "mode": "thresholds" },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  { "color": "red", "value": null },
-                  { "color": "orange", "value": 1 },
-                  { "color": "green", "value": 2 }
-                ]
-              },
-              "mappings": [
-                {
-                  "type": "value",
-                  "options": {
-                    "2": { "text": "2 / 2 READY", "color": "green" }
-                  }
-                }
-              ]
+              "unit": "none",
+              "color": { "mode": "fixed", "fixedColor": "green" }
             }
           },
           "targets": [
@@ -140,129 +108,71 @@ data:
           "id": 3,
           "title": "Total HTTP Requests",
           "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 8, "y": 0 },
+          "gridPos": { "h": 4, "w": 6, "x": 12, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "textMode": "value"
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto"
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "short",
-              "decimals": 0,
-              "color": { "fixedColor": "blue", "mode": "fixed" }
+              "unit": "none",
+              "color": { "mode": "fixed", "fixedColor": "blue" }
             }
           },
           "targets": [
             {
               "expr": "sum(grapi_http_requests_total)",
+              "instant": true,
               "refId": "A"
             }
           ]
         },
         {
           "id": 4,
-          "title": "Request Rate (req/s)",
+          "title": "Go API Uptime",
           "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 12, "y": 0 },
+          "gridPos": { "h": 4, "w": 6, "x": 18, "y": 0 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
             "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "textMode": "value"
+            "graphMode": "none",
+            "justifyMode": "auto",
+            "textMode": "auto"
           },
           "fieldConfig": {
             "defaults": {
-              "unit": "reqps",
-              "decimals": 2,
-              "color": { "fixedColor": "purple", "mode": "fixed" }
+              "unit": "s",
+              "color": { "mode": "fixed", "fixedColor": "blue" }
             }
           },
           "targets": [
             {
-              "expr": "sum(rate(grapi_http_requests_total[1m]))",
+              "expr": "max(grapi_uptime_seconds)",
+              "instant": true,
               "refId": "A"
             }
           ]
         },
         {
           "id": 5,
-          "title": "Total Go Heap Memory",
-          "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 16, "y": 0 },
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "textMode": "value"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "bytes",
-              "decimals": 1,
-              "color": { "fixedColor": "orange", "mode": "fixed" }
-            }
-          },
-          "targets": [
-            {
-              "expr": "sum(grapi_memory_alloc_bytes)",
-              "refId": "A"
-            }
-          ]
-        },
-        {
-          "id": 6,
-          "title": "Go API Uptime",
-          "type": "stat",
-          "gridPos": { "h": 4, "w": 4, "x": 20, "y": 0 },
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "options": {
-            "colorMode": "value",
-            "graphMode": "area",
-            "justifyMode": "center",
-            "textMode": "value"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "unit": "s",
-              "decimals": 0,
-              "color": { "fixedColor": "green", "mode": "fixed" }
-            }
-          },
-          "targets": [
-            {
-              "expr": "max(grapi_uptime_seconds)",
-              "refId": "A"
-            }
-          ]
-        },
-        {
-          "id": 7,
-          "title": "Go API HTTP Requests by Endpoint",
+          "title": "HTTP Requests by Endpoint",
           "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 4 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 4 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
-            "legend": {
-              "displayMode": "table",
-              "placement": "bottom",
-              "calcs": ["lastNotNull"]
-            },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": { "displayMode": "list", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
           },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
               "custom": {
                 "drawStyle": "line",
-                "lineInterpolation": "smooth",
                 "lineWidth": 2,
-                "fillOpacity": 25,
-                "gradientMode": "opacity",
+                "fillOpacity": 10,
                 "showPoints": "never"
               }
             }
@@ -276,28 +186,51 @@ data:
           ]
         },
         {
-          "id": 8,
-          "title": "Go Runtime Heap Memory per Pod",
+          "id": 6,
+          "title": "HTTP Request Rate (req/s)",
           "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 4 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 4 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
-            "legend": {
-              "displayMode": "table",
-              "placement": "bottom",
-              "calcs": ["mean", "lastNotNull"]
-            },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": { "displayMode": "list", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "custom": {
+                "drawStyle": "line",
+                "lineWidth": 2,
+                "fillOpacity": 10,
+                "showPoints": "never"
+              }
+            }
+          },
+          "targets": [
+            {
+              "expr": "sum by (endpoint) (rate(grapi_http_requests_total[1m]))",
+              "legendFormat": "{{endpoint}}",
+              "refId": "A"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Go Memory Usage per Pod",
+          "type": "timeseries",
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 12 },
+          "datasource": { "type": "prometheus", "uid": "prometheus" },
+          "options": {
+            "legend": { "displayMode": "list", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
           },
           "fieldConfig": {
             "defaults": {
               "unit": "bytes",
               "custom": {
                 "drawStyle": "line",
-                "lineInterpolation": "smooth",
                 "lineWidth": 2,
-                "fillOpacity": 25,
-                "gradientMode": "opacity",
+                "fillOpacity": 10,
                 "showPoints": "never"
               }
             }
@@ -311,30 +244,24 @@ data:
           ]
         },
         {
-          "id": 9,
+          "id": 8,
           "title": "Go Active Goroutines per Pod",
           "type": "timeseries",
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 4 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 12 },
           "datasource": { "type": "prometheus", "uid": "prometheus" },
           "options": {
-            "legend": {
-              "displayMode": "table",
-              "placement": "bottom",
-              "calcs": ["lastNotNull"]
-            },
-            "tooltip": { "mode": "multi", "sort": "desc" }
+            "legend": { "displayMode": "list", "placement": "bottom" },
+            "tooltip": { "mode": "single" }
           },
           "fieldConfig": {
             "defaults": {
               "unit": "short",
               "min": 0,
-              "max": 16,
+              "max": 15,
               "custom": {
                 "drawStyle": "line",
-                "lineInterpolation": "smooth",
                 "lineWidth": 2,
-                "fillOpacity": 25,
-                "gradientMode": "opacity",
+                "fillOpacity": 10,
                 "showPoints": "never"
               }
             }
@@ -343,92 +270,6 @@ data:
             {
               "expr": "grapi_goroutines",
               "legendFormat": "{{pod}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
-          "id": 10,
-          "title": "Kubernetes Scrape Targets Health (Prometheus, grapi, Traefik, Argo CD)",
-          "type": "stat",
-          "gridPos": { "h": 6, "w": 14, "x": 0, "y": 12 },
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "options": {
-            "colorMode": "background",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "horizontal",
-            "textMode": "value_and_name"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": { "mode": "thresholds" },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  { "color": "red", "value": null },
-                  { "color": "green", "value": 1 }
-                ]
-              },
-              "mappings": [
-                {
-                  "type": "value",
-                  "options": {
-                    "0": { "text": "OFFLINE", "color": "red" },
-                    "1": { "text": "ONLINE", "color": "green" }
-                  }
-                }
-              ]
-            }
-          },
-          "targets": [
-            {
-              "expr": "up",
-              "instant": true,
-              "legendFormat": "{{job}} • {{instance}}",
-              "refId": "A"
-            }
-          ]
-        },
-        {
-          "id": 11,
-          "title": "Argo CD GitOps Applications Live Status",
-          "type": "stat",
-          "gridPos": { "h": 6, "w": 10, "x": 14, "y": 12 },
-          "datasource": { "type": "prometheus", "uid": "prometheus" },
-          "options": {
-            "colorMode": "background",
-            "graphMode": "none",
-            "justifyMode": "center",
-            "orientation": "horizontal",
-            "textMode": "value_and_name"
-          },
-          "fieldConfig": {
-            "defaults": {
-              "color": { "mode": "thresholds" },
-              "thresholds": {
-                "mode": "absolute",
-                "steps": [
-                  { "color": "orange", "value": null },
-                  { "color": "green", "value": 1 }
-                ]
-              },
-              "mappings": [
-                {
-                  "type": "value",
-                  "options": {
-                    "0": { "text": "OUT OF SYNC", "color": "orange" },
-                    "1": { "text": "SYNCED & HEALTHY", "color": "green" }
-                  }
-                }
-              ]
-            }
-          },
-          "targets": [
-            {
-              "expr": "argocd_app_info{sync_status=\"Synced\",health_status=\"Healthy\"}",
-              "instant": true,
-              "legendFormat": "{{name}} ({{dest_namespace}})",
               "refId": "A"
             }
           ]
