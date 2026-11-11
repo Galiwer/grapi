@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: application
+
+resources:
+  - ../../base
+
+images:
+  - name: ghcr.io/galiwer/grapi
+    newName: ghcr.io/galiwer/grapi
+    newTag: sha-ca5600a

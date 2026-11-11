@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: grapi-ingress
+  namespace: application
+  labels:
+    app.kubernetes.io/name: grapi
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: app.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grapi-svc
+                port:
+                  number: 80
+    - host: ubuntu-24.04.3-arm64.shared
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: grapi-svc
+                port:
+                  number: 80
