@@ -15,6 +15,7 @@ import (
 func main() {
 	version := getEnv("APP_VERSION", "1.1.0")
 	environment := getEnv("APP_ENV", "local")
+	port := getEnv("PORT", "8090")
 
 	mux := http.NewServeMux()
 
@@ -28,7 +29,7 @@ func main() {
 	mux.HandleFunc("GET /metrics", api.Metrics)
 
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + port,
 		Handler:      mux,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
@@ -36,7 +37,7 @@ func main() {
 	}
 
 	go func() {
-		log.Println("DevOps Demo API running on port 8080")
+		log.Printf("DevOps Demo API running on port %s", port)
 
 		if err := server.ListenAndServe(); err != nil &&
 			err != http.ErrServerClosed {

@@ -26,7 +26,7 @@ data:
             regex: grapi
           - source_labels: [__meta_kubernetes_pod_ip]
             target_label: __address__
-            replacement: ${1}:8080
+            replacement: ${1}:8090
           - source_labels: [__meta_kubernetes_pod_name]
             target_label: pod
           - source_labels: [__meta_kubernetes_namespace]

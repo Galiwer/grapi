@@ -36,13 +36,15 @@ spec:
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
-              containerPort: 8080
+              containerPort: 8090
               protocol: TCP
           env:
             - name: APP_VERSION
               value: "1.1.0"
             - name: APP_ENV
               value: "production"
+            - name: PORT
+              value: "8090"
           lifecycle:
             preStop:
               exec:

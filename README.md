@@ -19,34 +19,36 @@ application/
 └── README.md
 ```
 
-## Exposed HTTP Endpoints (Port `8080`)
+## Exposed HTTP Endpoints (Port `8090`)
 
 | Method & Path      | Purpose                                             | Example Response                                                                                                  |
 | ------------------ | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `GET /`            | Application overview & active version               | `{"application":"DevOps Demo API","description":"REST API for demonstrating CI/CD and GitOps","version":"1.0.0"}` |
+| `GET /`            | Application overview & active version               | `{"application":"DevOps Demo API","description":"REST API for demonstrating CI/CD and GitOps","version":"1.1.0"}` |
 | `GET /health`      | Kubernetes `livenessProbe` endpoint                 | `{"status":"healthy"}`                                                                                            |
 | `GET /ready`       | Kubernetes `readinessProbe` endpoint                | `{"status":"ready"}`                                                                                              |
-| `GET /version`     | Detailed version, environment & UTC timestamp       | `{"application":"DevOps Demo API","environment":"local","timestamp":"...","version":"1.0.0"}`                     |
+| `GET /version`     | Detailed version, environment & UTC timestamp       | `{"application":"DevOps Demo API","environment":"local","timestamp":"...","version":"1.1.0"}`                     |
 | `GET /api/message` | Sample business payload endpoint for update testing | `{"message":"Hello! Your Go REST API is running successfully.","status":"success"}`                               |
+| `GET /metrics`     | Prometheus metrics endpoint                         | `grapi_http_requests_total{endpoint="/",status="200"} 1`                                                          |
 
 ## Environment Variables
 
 | Variable      | Default | Description                             |
 | ------------- | ------- | --------------------------------------- |
-| `APP_VERSION` | `1.0.0` | Version reported by `/` and `/version`  |
+| `APP_VERSION` | `1.1.0` | Version reported by `/` and `/version`  |
 | `APP_ENV`     | `local` | Environment name reported by `/version` |
+| `PORT`        | `8090`  | HTTP port the server listens on         |
 
 ## Running & Testing Locally
 
 ```bash
 # Run unit tests
-cd application
+cd grapi
 go test ./... -v
 
-# Run the server locally on :8080
+# Run the server locally on :8090
 go run ./cmd/server
 
 # Build & run with Docker (ARM64)
 docker build --platform linux/arm64 -t grapi:local .
-docker run --rm -p 8080:8080 grapi:local
+docker run --rm -p 8090:8090 grapi:local
 ```

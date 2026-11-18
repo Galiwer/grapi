@@ -39,14 +39,15 @@ WORKDIR /app
 COPY --from=builder /out/server /app/server
 
 # Runtime environment defaults (overridable via Kubernetes Deployment env)
-ENV APP_VERSION="1.0.0" \
-    APP_ENV="production"
+ENV APP_VERSION="1.1.0" \
+    APP_ENV="production" \
+    PORT="8090"
 
 # Switch to non-root user
 USER 10001:10001
 
 # Expose unprivileged HTTP port
-EXPOSE 8080
+EXPOSE 8090
 
 # Execute binary directly as PID 1 so SIGTERM is handled gracefully
 ENTRYPOINT ["/app/server"]

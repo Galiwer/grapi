@@ -70,7 +70,7 @@ jobs:
       - name: Validate Dockerfile instructions
         run: |
           grep -q "^USER 10001:10001" Dockerfile
-          grep -q "^EXPOSE 8080" Dockerfile
+          grep -q "^EXPOSE 8090" Dockerfile
 
   # ============================================================================
   # Stage 2: Build linux/arm64 Container Image & Publish to GHCR
