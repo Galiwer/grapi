@@ -9,4 +9,4 @@ resources:
 images:
   - name: ghcr.io/galiwer/grapi
     newName: ghcr.io/galiwer/grapi
-    newTag: sha-b3e5521
+    newTag: sha-dc65beb
